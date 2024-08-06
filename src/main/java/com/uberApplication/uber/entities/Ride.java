@@ -32,7 +32,7 @@ public class Ride {
     private Point pickupLocation;
 
     @Column(columnDefinition = "Geometry(Point, 4326)")
-    private Point dropoffLocation;
+    private Point dropOffLocation;
 
     @CreationTimestamp
     private LocalDateTime createdTime;  // when driver accept ride

@@ -4,17 +4,22 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.uberApplication.uber.DTO.RideRequestDto;
 import com.uberApplication.uber.entities.Driver;
+import com.uberApplication.uber.entities.RideRequest;
+import com.uberApplication.uber.repository.DriverRepo;
 import com.uberApplication.uber.strategies.DriverMatchingStrategy;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Service
 public class DriverMatchingNearestDriverStrategy implements DriverMatchingStrategy {
 
+    private final DriverRepo driverRepo;
+
     @Override
-    public List<Driver> findMatchingDriver(RideRequestDto rideRequestDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findMatchingDriver'");
+    public List<Driver> findMatchingDriver(RideRequest rideRequest) {
+        return driverRepo.findTenNearestDrivers(rideRequest.getPickupLocation());
     }
-    
 }
+

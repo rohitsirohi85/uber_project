@@ -33,7 +33,7 @@ public class RideRequest {
     private Point pickupLocation;
 
     @Column(columnDefinition = "Geometry(Point, 4326)")
-    private Point dropoffLocation;
+    private Point dropOffLocation;
 
     @CreationTimestamp
     private LocalDateTime requestedTime;
@@ -46,5 +46,7 @@ public class RideRequest {
 
     @Enumerated(EnumType.STRING)
     private RideRequestStatus rideRequestStatus;
+
+    private double fare;
     
 }

@@ -27,7 +27,7 @@ public class Driver {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private double ratings;
+    private double rating;
 
      private Boolean available;
 

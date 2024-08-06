@@ -23,7 +23,7 @@ public class RideDto {
     private Point pickupLocation;
 
     @Column(columnDefinition = "Geometry(Point, 4326)")
-    private Point dropoffLocation;
+    private Point dropOffLocation;
 
     
     private LocalDateTime createdTime;  // when driver accept ride
@@ -39,6 +39,8 @@ public class RideDto {
 
  
     private RideStatus rideStatus;
+
+    private String otp;
 
     private double fair;
 

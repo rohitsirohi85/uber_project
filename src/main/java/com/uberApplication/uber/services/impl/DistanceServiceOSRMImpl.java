@@ -10,7 +10,7 @@ public class DistanceServiceOSRMImpl implements DistanceService{
 
     @Override
     public double calculateDistance(Point src, Point des) {
-        // TODO Auto-generated method stub
+        // we will call the third party api
         throw new UnsupportedOperationException("Unimplemented method 'calculateDistance'");
     }
     
