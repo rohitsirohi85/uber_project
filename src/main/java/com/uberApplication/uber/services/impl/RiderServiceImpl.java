@@ -15,11 +15,11 @@ import com.uberApplication.uber.entities.RideRequest;
 import com.uberApplication.uber.entities.Rider;
 import com.uberApplication.uber.entities.User;
 import com.uberApplication.uber.entities.enums.RideRequestStatus;
+import com.uberApplication.uber.exception.ResourceNotFoundException;
 import com.uberApplication.uber.repository.RideRequestRepo;
 import com.uberApplication.uber.repository.RiderRepo;
 import com.uberApplication.uber.services.RiderService;
-import com.uberApplication.uber.strategies.DriverMatchingStrategy;
-import com.uberApplication.uber.strategies.RideFareCalculationStrategy;
+import com.uberApplication.uber.strategies.RideStrategyManager;
 
 
 
@@ -29,22 +29,22 @@ import com.uberApplication.uber.strategies.RideFareCalculationStrategy;
 public class RiderServiceImpl implements RiderService {
 
     private final ModelMapper modelMapper;
-    private final RideFareCalculationStrategy rideFareCalculationStrategy;
-    private final DriverMatchingStrategy driverMatchingStrategy;
+    private final RideStrategyManager strategyManager;
     private final RideRequestRepo rideRequestRepo;
     private final RiderRepo riderRepo;
 
     @Override
     public RideRequestDto requestRide(RideRequestDto rideRequestDto) {
+        Rider rider=getCurrentRider();
         RideRequest rideRequest = modelMapper.map(rideRequestDto, RideRequest.class);
         rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
 
-        Double fare = rideFareCalculationStrategy.calculateFare(rideRequest);
+        Double fare = strategyManager.rideFareCalculationStrategy().calculateFare(rideRequest);
         rideRequest.setFare(fare);
 
         RideRequest savedRideRequest = rideRequestRepo.save(rideRequest);
 
-        driverMatchingStrategy.findMatchingDriver(rideRequest);
+        strategyManager.driverMatchingStrategy(rider.getRating()).findMatchingDriver(rideRequest);
 
         return modelMapper.map(savedRideRequest, RideRequestDto.class);
     }
@@ -77,5 +77,14 @@ public class RiderServiceImpl implements RiderService {
                 .rating(0.0)
                 .build();
         return riderRepo.save(rider);
+    }
+
+    @Override
+    public Rider getCurrentRider() {
+
+       // TODO : implement Spring Security but now us dummy fields
+
+       return riderRepo.findById(1L).orElseThrow(()-> new ResourceNotFoundException("rider not found"));
+
     }
 }

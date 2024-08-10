@@ -32,5 +32,5 @@ public class Driver {
      private Boolean available;
 
      @Column(columnDefinition = "Geometry(Point, 4326)")   // only work when you have jts core and hibernate spatial dependencies
-      Point currentLocation;
+     private  Point currentLocation;
 }

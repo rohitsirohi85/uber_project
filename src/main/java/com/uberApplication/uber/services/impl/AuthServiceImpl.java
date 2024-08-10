@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.uberApplication.uber.DTO.DriverDto;
 import com.uberApplication.uber.DTO.UserDto;
@@ -32,6 +33,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public UserDto signup(SignupDto signupDto) {
         User user = userRepo.findByEmail(signupDto.getEmail()).orElse(null);
         if(user != null)

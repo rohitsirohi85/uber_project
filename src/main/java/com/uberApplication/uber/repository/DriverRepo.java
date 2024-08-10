@@ -10,8 +10,8 @@ import org.springframework.stereotype.Repository;
 import com.uberApplication.uber.entities.Driver;
 
 
-//ST_Distance(Point1 , Point2)
-//ST_DWithin(Point1 , 10000)
+//ST_Distance(Point1 , Point2)  ..give the distance between two points
+//ST_DWithin(Point1 , 10000)    ..give the distance between point and given distance
 
 @Repository
 public interface DriverRepo extends JpaRepository<Driver, Long> {
@@ -21,4 +21,12 @@ public interface DriverRepo extends JpaRepository<Driver, Long> {
             "ORDER BY distance " +
             "LIMIT 10", nativeQuery = true)
     List<Driver> findTenNearestDrivers(Point pickupLocation);
+
+
+    @Query(value = "SELECT d.* " + 
+                    "FROM drivers d " + 
+                     "WHERE d.available = true AND ST_DWithin(d.current_location, :pickupLocation, 15000) " + 
+                       "ORDER By d.rating DESC " + 
+                       "LIMIT 10", nativeQuery = true)
+    List<Driver> findTenNearbyTopRatedDrivers(Point pickupLocation);
 }
