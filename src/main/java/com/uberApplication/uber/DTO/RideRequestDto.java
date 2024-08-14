@@ -33,6 +33,7 @@ public class RideRequestDto {
     
     
     private RiderDto rider;
+    private double fare;
     private LocalDateTime requestedTime;
     private RideRequestStatus rideRequestStatus;
 

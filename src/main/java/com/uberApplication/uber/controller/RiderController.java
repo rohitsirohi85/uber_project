@@ -12,7 +12,7 @@ import com.uberApplication.uber.services.RiderService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(path = "/rider")
+@RequestMapping(path = "/riders")
 @RequiredArgsConstructor
 public class RiderController {
 

@@ -27,7 +27,7 @@ public class DistanceServiceOSRMImpl implements DistanceService{
             .uri(uri)
             .retrieve()
             .body(OSRMResponseDto.class);
-            return responseDto.getRoutes().get(0).getDistance()/1000;  // here we getting the routes..inside routes we get the distance in meter which we convert in km by /1000
+            return responseDto.getRoutes().get(0).getDistance()/1000.0;  // here we getting the routes..inside routes we get the distance in meter which we convert in km by /1000
         }
         catch(Exception e){
          throw new RuntimeException("error getting data from OSRM"+e.getMessage());
