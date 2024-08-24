@@ -2,7 +2,6 @@ package com.uberApplication.uber.DTO;
 
 import java.time.LocalDateTime;
 
-import org.locationtech.jts.geom.Point;
 
 import com.uberApplication.uber.entities.enums.PaymentMethod;
 import com.uberApplication.uber.entities.enums.RideStatus;

@@ -1,9 +1,10 @@
 package com.uberApplication.uber.services.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import com.uberApplication.uber.entities.enums.RideStatus;
 import com.uberApplication.uber.exception.ResourceNotFoundException;
 import com.uberApplication.uber.repository.DriverRepo;
 import com.uberApplication.uber.services.DriverService;
+import com.uberApplication.uber.services.PaymentService;
 import com.uberApplication.uber.services.RideRequestService;
 import com.uberApplication.uber.services.RideService;
 
@@ -30,6 +32,7 @@ public class DriverServiceImpl implements DriverService {
     private final DriverRepo driverRepo;
     private final RideService rideService;
     private final ModelMapper modelMapper;
+    private final PaymentService paymentService;
 
     @Override
     @Transactional
@@ -44,8 +47,7 @@ public class DriverServiceImpl implements DriverService {
         if (!currentDriver.getAvailable()) {
             throw new RuntimeException("Driver is not available now");
         }
-       currentDriver.setAvailable(false);
-       Driver savedDriver = driverRepo.save(currentDriver);
+      Driver savedDriver = updateDriverAvailability(currentDriver, false);
         Ride ride = rideService.createNewRide(rideRequest, savedDriver);
         return modelMapper.map(ride, RideDto.class);
 
@@ -53,8 +55,17 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public RideDto cancelRide(Long rideId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cancelRide'");
+     Ride ride = rideService.getRideById(rideId);
+     Driver driver = getCurrentDriver();
+     if (!driver.equals(ride.getDriver())) {
+        throw new RuntimeException("Driver can't cancel ride ,, he has not driver for this");
+       }
+       if (!ride.getRideStatus().equals(RideStatus.CONFIRMED)) {
+        throw new RuntimeException("Ride cannot cancel , invalid Status:"+ride.getRideStatus());
+       }
+       rideService.updateRideStatus(ride,RideStatus.CANCELLED);
+       updateDriverAvailability(driver, true);
+       return modelMapper.map(ride, RideDto.class);
     }
 
     @Override
@@ -74,14 +85,30 @@ public class DriverServiceImpl implements DriverService {
 
        ride.setStartedAt(LocalDateTime.now());
      Ride savedRide =   rideService.updateRideStatus(ride, RideStatus.ONGOING);
+
+       paymentService.createNewPayment(savedRide);     
+
      return modelMapper.map(savedRide, RideDto.class);
        
     }
 
     @Override
     public RideDto endRide(Long rideId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'endRide'");
+
+        Ride ride = rideService.getRideById(rideId);
+       Driver driver = getCurrentDriver();
+
+       if (!driver.equals(ride.getDriver())) {
+        throw new RuntimeException("Driver can't start ride ,, he has not accept earlier");
+       }
+       if (!ride.getRideStatus().equals(RideStatus.ONGOING)) {
+        throw new RuntimeException("Ride status is not ONGOING so it can't ne endedS , Status:"+ride.getRideStatus());
+       }
+       ride.setEndedAt(LocalDateTime.now());
+       Ride savedRide = rideService.updateRideStatus(ride, RideStatus.ENDED);
+       updateDriverAvailability(driver, true);
+       paymentService.processPayment(ride);
+      return modelMapper.map(savedRide,RideDto.class);
     }
 
     @Override
@@ -92,19 +119,28 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public DriverDto getMyProfile() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getMyProfile'");
+       Driver driver = getCurrentDriver();
+       return modelMapper.map(driver, DriverDto.class);
     }
 
     @Override
-    public List<RideDto> getAllMyRides() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllMyRides'");
+    public Page<RideDto> getAllMyRides(PageRequest pageRequest) {
+       Driver driver =getCurrentDriver();
+        return rideService.getAllRidesOfDriver(driver, pageRequest).map(ride->modelMapper.map(ride, RideDto.class));
     }
 
     @Override
     public Driver getCurrentDriver() {
      return driverRepo.findById(2L).orElseThrow(()->new ResourceNotFoundException("driver not found with id:"+2L));
+    }
+
+    @Override
+    public Driver updateDriverAvailability(Driver driver, Boolean available) {
+      
+       driver.setAvailable(available);
+      return driverRepo.save(driver);
+
+
     }
     
 }

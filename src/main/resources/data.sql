@@ -57,5 +57,7 @@ INSERT INTO driver (id, user_id, rating, available, current_location) VALUES
 (12, 12, 4.8, true, ST_GeomFromText('POINT(77.6839 27.4933)', 4326)), -- Gita Mandir
 (13, 13, 4.5, true, ST_GeomFromText('POINT(77.6755 27.4892)', 4326)); -- Raman Reti
 
-
+INSERT INTO wallet (id,user_id,balance) VALUES
+(1,1,100),
+(2,2,500);
 

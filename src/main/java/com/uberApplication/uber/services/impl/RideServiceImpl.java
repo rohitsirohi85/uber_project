@@ -6,11 +6,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import com.uberApplication.uber.DTO.RideRequestDto;
 import com.uberApplication.uber.entities.Driver;
 import com.uberApplication.uber.entities.Ride;
 import com.uberApplication.uber.entities.RideRequest;
+import com.uberApplication.uber.entities.Rider;
 import com.uberApplication.uber.entities.enums.RideRequestStatus;
 import com.uberApplication.uber.entities.enums.RideStatus;
 import com.uberApplication.uber.exception.ResourceNotFoundException;
@@ -33,11 +32,7 @@ public class RideServiceImpl implements RideService {
      return rideRepo.findById(rideId).orElseThrow(()-> new ResourceNotFoundException("Ride not found with id:"+rideId));
     }
 
-    @Override
-    public void matchWithDriver(RideRequestDto rideRequestDto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'matchWithDriver'");
-    }
+ 
 
     @Override
     public Ride createNewRide(RideRequest rideRequest, Driver driver) {
@@ -60,15 +55,13 @@ public class RideServiceImpl implements RideService {
     }
 
     @Override
-    public Page<Ride> getAllRidesOfRider(Long riderId, PageRequest pageRequest) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllRidesOfRider'");
+    public Page<Ride> getAllRidesOfRider(Rider rider, PageRequest pageRequest) {
+      return rideRepo.findByRider(rider,pageRequest);
     }
 
     @Override
-    public Page<Ride> getAllRidesOfDriver(Long driverId, PageRequest pageRequest) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAllRidesOfDriver'");
+    public Page<Ride> getAllRidesOfDriver(Driver driver, PageRequest pageRequest) {
+       return rideRepo.findByDriver(driver,pageRequest);
     }
 
     public String generateOTP(){

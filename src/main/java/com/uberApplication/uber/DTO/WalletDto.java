@@ -1,5 +1,8 @@
 package com.uberApplication.uber.DTO;
 
+import java.util.List;
+
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,8 +10,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RiderDto {
+public class WalletDto {
     private Long id;
+
     private UserDto user;
-    private double rating;
+
+    private double balance;
+
+
+    private List<WalletTransactionDto> transactions;
 }
