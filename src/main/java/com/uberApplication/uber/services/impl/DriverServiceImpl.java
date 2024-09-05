@@ -2,6 +2,8 @@ package com.uberApplication.uber.services.impl;
 
 import java.time.LocalDateTime;
 
+import com.uberApplication.uber.DTO.RiderDto;
+import com.uberApplication.uber.services.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,10 +19,6 @@ import com.uberApplication.uber.entities.enums.RideRequestStatus;
 import com.uberApplication.uber.entities.enums.RideStatus;
 import com.uberApplication.uber.exception.ResourceNotFoundException;
 import com.uberApplication.uber.repository.DriverRepo;
-import com.uberApplication.uber.services.DriverService;
-import com.uberApplication.uber.services.PaymentService;
-import com.uberApplication.uber.services.RideRequestService;
-import com.uberApplication.uber.services.RideService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +31,7 @@ public class DriverServiceImpl implements DriverService {
     private final RideService rideService;
     private final ModelMapper modelMapper;
     private final PaymentService paymentService;
+    private final RatingService ratingService;
 
     @Override
     @Transactional
@@ -86,7 +85,8 @@ public class DriverServiceImpl implements DriverService {
        ride.setStartedAt(LocalDateTime.now());
      Ride savedRide =   rideService.updateRideStatus(ride, RideStatus.ONGOING);
 
-       paymentService.createNewPayment(savedRide);     
+       paymentService.createNewPayment(savedRide);
+       ratingService.createNewRating(savedRide);
 
      return modelMapper.map(savedRide, RideDto.class);
        
@@ -112,9 +112,18 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public RideDto rateRider(Long rideId, Integer rating) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'rateRider'");
+    public RiderDto rateRider(Long rideId, Integer rating) {
+       Ride ride = rideService.getRideById(rideId);
+       Driver driver = getCurrentDriver();
+       // check if this driver owns this ride or not
+        if (!driver.equals(ride.getDriver())) {
+            throw new RuntimeException("Driver is not owner of this ride");
+        }
+        if (!ride.getRideStatus().equals(RideStatus.ENDED)) {
+            throw new RuntimeException("Ride status is not completed yet, Status:"+ride.getRideStatus());
+        }
+
+       return ratingService.rateRider(ride,rating);
     }
 
     @Override
@@ -142,5 +151,10 @@ public class DriverServiceImpl implements DriverService {
 
 
     }
-    
+
+    @Override
+    public Driver createNewDriver(Driver driver) {
+        return driverRepo.save(driver);
+    }
+
 }

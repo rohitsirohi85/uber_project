@@ -10,6 +10,8 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.List;
+
 @RestControllerAdvice
 public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
 
@@ -21,11 +23,14 @@ public class GlobalResponseHandler implements ResponseBodyAdvice<Object> {
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 
-         if (request.getURI().getPath().contains("/v3/api-docs")) {  // defining that return the body instead of apiResponse when hit the "/v3/api-docs" path
-            return body;
-         }
+        List<String> allowedRoutes = List.of("/v3/api-docs" , "/actuator");  // defining the api link which we only want to return instead of api response
 
-        if(body instanceof ApiResponse<?>) {
+        boolean isAllowed = allowedRoutes.stream()   // creating this method, so we don't need to create method for specific api server link everytime
+                .anyMatch(route-> request.getURI().getPath().contains(route));
+
+
+
+        if(body instanceof ApiResponse<?> || isAllowed) {
             return body;
         }
 

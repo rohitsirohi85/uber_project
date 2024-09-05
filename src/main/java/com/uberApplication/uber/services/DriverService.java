@@ -2,6 +2,7 @@ package com.uberApplication.uber.services;
 
 import com.uberApplication.uber.DTO.DriverDto;
 
+import com.uberApplication.uber.DTO.RiderDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
@@ -18,7 +19,7 @@ public interface DriverService {
 
     RideDto endRide(Long rideId);
 
-    RideDto rateRider(Long rideId , Integer rating);
+    RiderDto rateRider(Long rideId , Integer rating);
 
     DriverDto getMyProfile();
 
@@ -27,5 +28,7 @@ public interface DriverService {
     Driver getCurrentDriver();
 
     Driver updateDriverAvailability(Driver driver, Boolean available);
+
+    Driver createNewDriver(Driver driver);
 
 }

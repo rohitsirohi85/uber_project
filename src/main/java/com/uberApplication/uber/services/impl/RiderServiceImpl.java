@@ -2,6 +2,7 @@ package com.uberApplication.uber.services.impl;
 
 import java.util.List;
 
+import com.uberApplication.uber.services.RatingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -42,6 +43,7 @@ public class RiderServiceImpl implements RiderService {
     private final RiderRepo riderRepo;
     private final RideService rideService;
     private final DriverService driverService;
+    private final RatingService ratingService;
 
     @Override
     @Transactional
@@ -81,7 +83,17 @@ public class RiderServiceImpl implements RiderService {
 
     @Override
     public DriverDto rateDriver(Long rideId, Integer rating) {
-        return null;
+        Ride ride = rideService.getRideById(rideId);
+        Rider rider = getCurrentRider();
+        // check if this driver owns this ride or not
+        if (!rider.equals(ride.getRider())) {
+            throw new RuntimeException("Rider is not owner of this ride");
+        }
+        if (!ride.getRideStatus().equals(RideStatus.ENDED)) {
+            throw new RuntimeException("Ride status is not completed yet, Status:"+ride.getRideStatus());
+        }
+
+        return ratingService.rateDriver(ride,rating);
     }
 
     @Override

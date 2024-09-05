@@ -2,16 +2,12 @@ package com.uberApplication.uber.entities;
 
 import java.time.LocalDateTime;
 
+import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.uberApplication.uber.entities.enums.TransactionMethod;
 import com.uberApplication.uber.entities.enums.TransactionType;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +20,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-
+@Table(indexes = {
+        @Index(name = "idx_wallet_transactions_wallet" , columnList = "wallet_id"),
+        @Index(name = "idx_wallet_transactions_ride" , columnList = "ride_id")
+})
 public class WalletTransaction {
     
            @Id

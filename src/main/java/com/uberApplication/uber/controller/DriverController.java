@@ -1,14 +1,12 @@
 package com.uberApplication.uber.controller;
 
+import com.uberApplication.uber.DTO.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.uberApplication.uber.DTO.RideDto;
-import com.uberApplication.uber.DTO.RideStartDto;
 import com.uberApplication.uber.services.DriverService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,5 +32,30 @@ public class DriverController {
           public ResponseEntity<RideDto> endRide(@PathVariable Long rideId){
                return ResponseEntity.ok(driverService.endRide(rideId));
           }
+
+    @PostMapping(path="/cancelRide/{rideId}")
+    public ResponseEntity<RideDto> cancelRide(@PathVariable Long rideId){
+        return ResponseEntity.ok(driverService.cancelRide(rideId));
+    }
+
+    @PostMapping(path="/rateRider")
+    public ResponseEntity<RiderDto> rateRider(@RequestBody RatingDto ratingDto ){
+        return ResponseEntity.ok(driverService.rateRider(ratingDto.getRideId(), ratingDto.getRating()));
+    }
+
+    @GetMapping(path = "/getMyProfile")
+    public ResponseEntity<DriverDto> getMyProfile(){
+        return ResponseEntity.ok(driverService.getMyProfile());
+    }
+
+    @GetMapping(path = "/getMyRides")
+    public ResponseEntity<Page<RideDto>> getAllMyRides(@RequestParam(defaultValue="0") Integer pageOffSet , @RequestParam(defaultValue = "10" , required = false) Integer pageSize){
+        PageRequest pageRequest = PageRequest
+                .of(pageOffSet, pageSize , Sort.by(Sort.Direction.DESC , "CreatedTime" , "id"));
+        return ResponseEntity.ok(driverService.getAllMyRides(pageRequest));
+    }
+
+
+
 
 }
