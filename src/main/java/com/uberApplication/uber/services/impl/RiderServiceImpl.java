@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -121,9 +122,9 @@ public class RiderServiceImpl implements RiderService {
     @Override
     public Rider getCurrentRider() {
 
-       // TODO : implement Spring Security but now us dummy fields
+       User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-       return riderRepo.findById(1L).orElseThrow(()-> new ResourceNotFoundException("rider not found"));
+       return riderRepo.findByUser(user).orElseThrow(()-> new ResourceNotFoundException("rider not associate with user with id : "+user.getId()));
 
     }
 }

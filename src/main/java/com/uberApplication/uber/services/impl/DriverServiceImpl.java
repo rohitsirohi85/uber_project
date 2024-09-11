@@ -3,10 +3,12 @@ package com.uberApplication.uber.services.impl;
 import java.time.LocalDateTime;
 
 import com.uberApplication.uber.DTO.RiderDto;
+import com.uberApplication.uber.entities.User;
 import com.uberApplication.uber.services.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -140,7 +142,8 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     public Driver getCurrentDriver() {
-     return driverRepo.findById(2L).orElseThrow(()->new ResourceNotFoundException("driver not found with id:"+2L));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+     return driverRepo.findByUser(user).orElseThrow(()->new ResourceNotFoundException("driver not found with id:"+user.getId()));
     }
 
     @Override
