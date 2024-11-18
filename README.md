@@ -101,4 +101,3 @@ Unauthorized:
 
 Authentication & Authorization
 The system uses JWT tokens for authentication. Access tokens expire after a set period, and a refresh token is required to obtain a new access token.
-
