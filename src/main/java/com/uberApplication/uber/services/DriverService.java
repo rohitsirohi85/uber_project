@@ -2,6 +2,7 @@ package com.uberApplication.uber.services;
 
 import com.uberApplication.uber.DTO.DriverDto;
 
+import com.uberApplication.uber.DTO.RideRequestDto;
 import com.uberApplication.uber.DTO.RiderDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

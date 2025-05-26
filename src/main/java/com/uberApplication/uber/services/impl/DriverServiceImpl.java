@@ -2,6 +2,7 @@ package com.uberApplication.uber.services.impl;
 
 import java.time.LocalDateTime;
 
+import com.uberApplication.uber.DTO.RideRequestDto;
 import com.uberApplication.uber.DTO.RiderDto;
 import com.uberApplication.uber.entities.User;
 import com.uberApplication.uber.services.*;
@@ -43,16 +44,17 @@ public class DriverServiceImpl implements DriverService {
         if (!rideRequest.getRideRequestStatus().equals(RideRequestStatus.PENDING)) {
             throw new RuntimeException("Ride request cannot be accepted , Ride request Status is:"+rideRequest.getRideRequestStatus());
         }
-        
+
         Driver currentDriver=getCurrentDriver();
         if (!currentDriver.getAvailable()) {
             throw new RuntimeException("Driver is not available now");
         }
-      Driver savedDriver = updateDriverAvailability(currentDriver, false);
+        Driver savedDriver = updateDriverAvailability(currentDriver, false);
         Ride ride = rideService.createNewRide(rideRequest, savedDriver);
         return modelMapper.map(ride, RideDto.class);
 
     }
+
 
     @Override
     public RideDto cancelRide(Long rideId) {
