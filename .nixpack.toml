@@ -1,6 +1,0 @@
-[phases.setup]
-nixpkgsArchive = "https://github.com/NixOS/nixpkgs/archive/7d070f9a8f8b473899a4438945b6d1084b0a777e.tar.gz"
-
-[phases.install]
-runtime = "java"
-runtimeVersion = "21"
