@@ -1,7 +1,9 @@
 package com.uberApplication.uber.services.impl;
 
 import java.util.List;
+import java.util.Random;
 
+import com.uberApplication.uber.repository.RideRepo;
 import com.uberApplication.uber.services.RatingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +39,7 @@ import com.uberApplication.uber.strategies.RideStrategyManager;
 @RequiredArgsConstructor
 @Slf4j
 public class RiderServiceImpl implements RiderService {
+    private final RideRepo rideRepo;
 
     private final ModelMapper modelMapper;
     private final RideStrategyManager strategyManager;
@@ -53,9 +56,12 @@ public class RiderServiceImpl implements RiderService {
         RideRequest rideRequest = modelMapper.map(rideRequestDto, RideRequest.class);
         rideRequest.setRideRequestStatus(RideRequestStatus.PENDING);
         rideRequest.setRider(rider);
+        rideRequest.setOtp(generateOTP());
 
         Double fare = strategyManager.rideFareCalculationStrategy().calculateFare(rideRequest);
         rideRequest.setFare(fare);
+
+
 
         RideRequest savedRideRequest = rideRequestRepo.save(rideRequest);
 
@@ -125,6 +131,13 @@ public class RiderServiceImpl implements RiderService {
        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
        return riderRepo.findByUser(user).orElseThrow(()-> new ResourceNotFoundException("rider not associate with user with id : "+user.getId()));
+
+    }
+
+    public String generateOTP(){
+        Random random = new Random();
+        int otpInt = random.nextInt(10000); // 0 to 9999
+        return String.format("%04d", otpInt);
 
     }
 }

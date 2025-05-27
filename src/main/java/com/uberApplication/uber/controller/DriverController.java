@@ -12,6 +12,8 @@ import com.uberApplication.uber.services.DriverService;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/drivers")
 @RequiredArgsConstructor
@@ -25,7 +27,13 @@ public class DriverController {
                return ResponseEntity.ok(driverService.acceptRide(rideRequestId));
           }
 
-          @PostMapping("/startRide/{rideRequestId}")
+    @GetMapping("/rideRequests")
+    public List<RideRequestDto> getAvailableRideRequests() {
+        return driverService.getPendingRideRequests();
+    }
+
+
+    @PostMapping("/startRide/{rideRequestId}")
           public ResponseEntity<RideDto> startRide(@PathVariable Long rideRequestId , @RequestBody RideStartDto rideStartDto ){
                return ResponseEntity.ok(driverService.startRide(rideRequestId , rideStartDto.getOtp()));
           }

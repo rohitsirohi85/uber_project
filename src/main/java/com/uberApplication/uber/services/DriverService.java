@@ -10,6 +10,8 @@ import org.springframework.data.domain.PageRequest;
 import com.uberApplication.uber.DTO.RideDto;
 import com.uberApplication.uber.entities.Driver;
 
+import java.util.List;
+
 public interface DriverService {
 
     RideDto acceptRide(Long rideRequestId);
@@ -32,4 +34,5 @@ public interface DriverService {
 
     Driver createNewDriver(Driver driver);
 
+    List<RideRequestDto> getPendingRideRequests();
 }

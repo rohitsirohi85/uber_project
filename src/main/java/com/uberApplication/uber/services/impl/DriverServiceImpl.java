@@ -1,10 +1,13 @@
 package com.uberApplication.uber.services.impl;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.uberApplication.uber.DTO.RideRequestDto;
 import com.uberApplication.uber.DTO.RiderDto;
 import com.uberApplication.uber.entities.User;
+import com.uberApplication.uber.repository.RideRequestRepo;
 import com.uberApplication.uber.services.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -35,6 +38,7 @@ public class DriverServiceImpl implements DriverService {
     private final ModelMapper modelMapper;
     private final PaymentService paymentService;
     private final RatingService ratingService;
+    private final RideRequestRepo rideRequestRepo;
 
     @Override
     @Transactional
@@ -82,9 +86,11 @@ public class DriverServiceImpl implements DriverService {
        if (!ride.getRideStatus().equals(RideStatus.CONFIRMED)) {
         throw new RuntimeException("Ride status is not confirmed , Status:"+ride.getRideStatus());
        }
-       if (!otp.equals(ride.getOtp())) {
-        throw new RuntimeException("otp is not valid:"+otp);
-       }
+        // Get otp from rideRequest
+        String expectedOtp = ride.getRideRequest().getOtp();
+        if (!otp.equals(expectedOtp)) {
+            throw new RuntimeException("OTP is not valid: " + otp);
+        }
 
        ride.setStartedAt(LocalDateTime.now());
      Ride savedRide =   rideService.updateRideStatus(ride, RideStatus.ONGOING);
@@ -161,5 +167,14 @@ public class DriverServiceImpl implements DriverService {
     public Driver createNewDriver(Driver driver) {
         return driverRepo.save(driver);
     }
+
+    @Override
+    public List<RideRequestDto> getPendingRideRequests() {
+        List<RideRequest> requests = rideRequestRepo.findByRideRequestStatus(RideRequestStatus.PENDING);
+        return requests.stream()
+                .map(request -> modelMapper.map(request, RideRequestDto.class))
+                .collect(Collectors.toList());
+    }
+
 
 }

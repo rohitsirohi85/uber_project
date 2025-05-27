@@ -27,8 +27,8 @@ public class RideRequestDto {
     
     private PaymentMethod paymentMethod;
     
-    
-    
+
+    private String otp;
     
     
     

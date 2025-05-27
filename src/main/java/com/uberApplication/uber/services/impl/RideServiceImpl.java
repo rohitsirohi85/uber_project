@@ -41,7 +41,6 @@ public class RideServiceImpl implements RideService {
         Ride ride = modelMapper.map(rideRequest, Ride.class);
         ride.setRideStatus(RideStatus.CONFIRMED);
         ride.setDriver(driver);
-        ride.setOtp(generateOTP());
         ride.setId(null);
 
         rideRequestService.update(rideRequest);
@@ -64,11 +63,6 @@ public class RideServiceImpl implements RideService {
        return rideRepo.findByDriver(driver,pageRequest);
     }
 
-    public String generateOTP(){
-        Random random = new Random();
-        int otpInt = random.nextInt(10000); // 0 to 9999
-        return String.format("%04d", otpInt);
 
-    }
     
 }

@@ -47,5 +47,7 @@ public class RideRequest {
     private RideRequestStatus rideRequestStatus;
 
     private Double fare;
+
+    private String otp;
     
 }
