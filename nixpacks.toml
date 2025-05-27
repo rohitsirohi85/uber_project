@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ['openjdk21']
-
-[phases.build]
-cmds = ['chmod +x ./mvnw', './mvnw clean package -DskipTests']
-
-[start]
-cmd = 'java -jar target/uberApp-0.0.1-SNAPSHOT.jar'
