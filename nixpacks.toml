@@ -2,7 +2,7 @@
 nixPkgs = ['openjdk21']
 
 [phases.build]
-cmds = ['mvn clean compile']
+cmds = ['chmod +x ./mvnw', './mvnw clean compile']
 
 [start]
 cmd = 'java -jar target/your-app-name.jar'
