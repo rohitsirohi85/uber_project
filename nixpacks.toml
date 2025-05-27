@@ -5,4 +5,4 @@ nixPkgs = ['openjdk21']
 cmds = ['chmod +x ./mvnw', './mvnw clean compile']
 
 [start]
-cmd = 'java -jar target/your-app-name.jar'
+cmd = 'java -jar target/uberApp-0.0.1-SNAPSHOT.jar'
