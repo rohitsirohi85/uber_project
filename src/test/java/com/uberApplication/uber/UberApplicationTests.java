@@ -1,12 +1,12 @@
-//package com.uberApplication.uber;
-//
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.context.SpringBootTest;
-//
-//@SpringBootTest
-//class UberApplicationTests {
-//
+package com.uberApplication.uber;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class UberApplicationTests {
+
 //	@Autowired
 //	private EmailSenderService emailSenderService;
 //
@@ -37,5 +37,5 @@
 //		emailSenderService.sendEmail(emails,"this is a testing mail",
 //				"welcome to My spring boot email service , if you got this email that means i completed my uber application");
 //	}
-//
-//}
+
+}
