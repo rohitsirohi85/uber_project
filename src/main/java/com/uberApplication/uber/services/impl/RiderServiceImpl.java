@@ -65,8 +65,6 @@ public class RiderServiceImpl implements RiderService {
 
         RideRequest savedRideRequest = rideRequestRepo.save(rideRequest);
 
-       List<Driver> drivers =  strategyManager.driverMatchingStrategy(rider.getRating()).findMatchingDriver(rideRequest);
-               // TODO:send the notification to driver to accept ride
 
         return modelMapper.map(savedRideRequest, RideRequestDto.class);
     }

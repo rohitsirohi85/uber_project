@@ -4,8 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.uberApplication.uber.DTO.RideRequestDto;
-import com.uberApplication.uber.DTO.RiderDto;
+import com.uberApplication.uber.DTO.*;
 import com.uberApplication.uber.entities.User;
 import com.uberApplication.uber.repository.RideRequestRepo;
 import com.uberApplication.uber.services.*;
@@ -16,8 +15,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.uberApplication.uber.DTO.DriverDto;
-import com.uberApplication.uber.DTO.RideDto;
 import com.uberApplication.uber.entities.Driver;
 import com.uberApplication.uber.entities.Ride;
 import com.uberApplication.uber.entities.RideRequest;
@@ -109,7 +106,7 @@ public class DriverServiceImpl implements DriverService {
        Driver driver = getCurrentDriver();
 
        if (!driver.equals(ride.getDriver())) {
-        throw new RuntimeException("Driver can't start ride ,, he has not accept earlier");
+        throw new RuntimeException("Driver can't end ride ,, he has not valid");
        }
        if (!ride.getRideStatus().equals(RideStatus.ONGOING)) {
         throw new RuntimeException("Ride status is not ONGOING so it can't ne endedS , Status:"+ride.getRideStatus());
@@ -169,12 +166,32 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public List<RideRequestDto> getPendingRideRequests() {
+    public List<PendingRideRequestDto> getPendingRideRequests() {
         List<RideRequest> requests = rideRequestRepo.findByRideRequestStatus(RideRequestStatus.PENDING);
         return requests.stream()
-                .map(request -> modelMapper.map(request, RideRequestDto.class))
+                .map(request -> modelMapper.map(request, PendingRideRequestDto.class))
                 .collect(Collectors.toList());
     }
+
+
+
+    /* pending api:  only call those drivers who are in 15 km range  */
+
+//    @Override
+//    public List<RideRequestDto> getPendingRideRequests() {
+//        // Get current driver's location
+//        Driver currentDriver = getCurrentDriver();
+//
+//        // Find only ride requests that are near the current driver's location
+//        List<RideRequest> nearbyRequests = rideRequestRepo.findNearbyRideRequestsByStatus(
+//                currentDriver.getCurrentLocation(),
+//                RideRequestStatus.PENDING
+//        );
+//
+//        return nearbyRequests.stream()
+//                .map(request -> modelMapper.map(request, RideRequestDto.class))
+//                .collect(Collectors.toList());
+//    }
 
 
 }

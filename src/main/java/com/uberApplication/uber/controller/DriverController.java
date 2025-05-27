@@ -28,7 +28,7 @@ public class DriverController {
           }
 
     @GetMapping("/rideRequests")
-    public List<RideRequestDto> getAvailableRideRequests() {
+    public List<PendingRideRequestDto> getAvailableRideRequests() {
         return driverService.getPendingRideRequests();
     }
 
